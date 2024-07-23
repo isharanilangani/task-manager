@@ -47,15 +47,28 @@ const SignInPage = () => {
     }));
   };
 
+  const handleBlur = (field, value) => {
+    if (!value) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [field]: `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
+      }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const emailError = validateEmail(email)
-      ? ""
-      : "Please enter a valid email address.";
-    const passwordError = validatePassword(password)
-      ? ""
-      : "Password must be 8-16 characters, include letters, numbers, and symbols.";
+    const emailError = email
+      ? validateEmail(email)
+        ? ""
+        : "Please enter a valid email address."
+      : "Email is required.";
+    const passwordError = password
+      ? validatePassword(password)
+        ? ""
+        : "Password must be 8-16 characters, include letters, numbers, and symbols."
+      : "Password is required.";
 
     if (emailError || passwordError) {
       setErrors({ email: emailError, password: passwordError });
@@ -73,13 +86,16 @@ const SignInPage = () => {
         <h1>Sign In</h1>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formEmail" className="form-group">
-            <Form.Label className="form-label">Email</Form.Label>
+            <Form.Label className="form-label">
+              <span className="text-danger">*</span> Email
+            </Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter your email"
               className="form-control"
               value={email}
               onChange={handleEmailChange}
+              onBlur={() => handleBlur("email", email)}
               isInvalid={!!errors.email}
             />
             <Form.Control.Feedback type="invalid" className="d-block">
@@ -88,13 +104,16 @@ const SignInPage = () => {
           </Form.Group>
 
           <Form.Group controlId="formPassword" className="form-group">
-            <Form.Label className="form-label">Password</Form.Label>
+            <Form.Label className="form-label">
+              <span className="text-danger">*</span> Password
+            </Form.Label>
             <Form.Control
               type="password"
               placeholder="Enter your password"
               className="form-control"
               value={password}
               onChange={handlePasswordChange}
+              onBlur={() => handleBlur("password", password)}
               isInvalid={!!errors.password}
             />
             <Form.Control.Feedback type="invalid" className="d-block">
