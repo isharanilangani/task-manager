@@ -44,10 +44,12 @@ const SignUpPage = () => {
               className="form-control"
             />
           </Form.Group>
-
+          
+          <div className="signup-button">
           <Button variant="primary" type="submit" className="btn-primary">
             Sign Up
           </Button>
+          </div>
 
           <div className="or-separator">or</div>
 

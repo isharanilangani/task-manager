@@ -26,13 +26,14 @@
 }
 
 .right-side h1 {
-  font-size: 30px;
-  margin: 20px 0 20px 0;
+  font-size: 20px;
+  margin: 40px 20px 10px 20px;
   font-weight: bold;
 }
 
 .right-side .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin: 5px 20px 10px 20px;
 }
 
 .right-side .form-label {
@@ -48,13 +49,13 @@
 
 .right-side .btn-primary {
   font-size: 15px;
-  margin-bottom: 20px;
   background-color: #6f4f28;
   border: none;
   border-radius: 5px;
   color: #fff;
   font-weight: bold;
-  width: 100%;
+  width: 93%;
+  margin: 10px 20px 10px 20px;
 }
 
 .right-side .btn-primary:hover {
@@ -65,7 +66,7 @@
   text-align: center;
   font-size: 15px;
   font-weight: bold;
-  padding-bottom: 10px;
+  margin: 5px 20px 10px 20px;
 }
 
 .social-buttons {
@@ -73,6 +74,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   justify-items: center;
+  margin: 5px 20px 10px 20px;
 }
 
 .social-buttons .btn-google,
@@ -83,6 +85,7 @@
 .sign-in {
   font-size: 15px;
   text-align: center;
+  margin: 5px 20px 40px 20px;
 }
 
 .sign-in a {
