@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import "./SignUpPage.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./SignUpPage.css";
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [apiError, setApiError] = useState("");
 
   const handleSignUpClick = (e) => {
     e.preventDefault();
@@ -21,7 +23,6 @@ const SignInPage = () => {
   };
 
   const validatePassword = (password) => {
-    // At least one letter, one number, one special character, and 8-16 characters long
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
     return passwordRegex.test(password);
@@ -32,7 +33,7 @@ const SignInPage = () => {
     setEmail(value);
     setErrors((prevErrors) => ({
       ...prevErrors,
-      email: validateEmail(value) ? "" : "Please enter a valid email address.",
+      email: getEmailError(value),
     }));
   };
 
@@ -41,9 +42,7 @@ const SignInPage = () => {
     setPassword(value);
     setErrors((prevErrors) => ({
       ...prevErrors,
-      password: validatePassword(value)
-        ? ""
-        : "Password must be 8-16 characters, include letters, numbers, and symbols.",
+      password: getPasswordError(value),
     }));
   };
 
@@ -51,30 +50,65 @@ const SignInPage = () => {
     if (!value) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [field]: `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
+        [field]: `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is required.`,
       }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const emailError = email
-      ? validateEmail(email)
-        ? ""
-        : "Please enter a valid email address."
-      : "Email is required.";
-    const passwordError = password
-      ? validatePassword(password)
-        ? ""
-        : "Password must be 8-16 characters, include letters, numbers, and symbols."
-      : "Password is required.";
+    const emailError = getEmailError(email);
+    const passwordError = getPasswordError(password);
 
     if (emailError || passwordError) {
       setErrors({ email: emailError, password: passwordError });
     } else {
-      console.log("Form submitted successfully");
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/users/login",
+          null,
+          {
+            params: { email, password },
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log("Login successful:", response.data);
+        navigate("/dashboard");
+      } catch (error) {
+        if (error.response) {
+          setApiError(
+            "Login failed. Please check your credentials and try again."
+          );
+        } else if (error.request) {
+          setApiError("Network error. Please try again later.");
+        } else {
+          setApiError("An unexpected error occurred.");
+        }
+      }
     }
+  };
+
+  const getEmailError = (email) => {
+    if (!email) {
+      return "Email is required.";
+    }
+    if (!validateEmail(email)) {
+      return "Please enter a valid email address.";
+    }
+    return "";
+  };
+
+  const getPasswordError = (password) => {
+    if (!password) {
+      return "Password is required.";
+    }
+    if (!validatePassword(password)) {
+      return "Password must be 8-16 characters, include letters, numbers, and symbols.";
+    }
+    return "";
   };
 
   return (
@@ -120,6 +154,12 @@ const SignInPage = () => {
               {errors.password}
             </Form.Control.Feedback>
           </Form.Group>
+
+          {apiError && (
+            <div className="alert alert-danger" role="alert">
+              {apiError}
+            </div>
+          )}
 
           <div className="signup-button">
             <Button variant="primary" type="submit" className="btn-primary">
