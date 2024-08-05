@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 import "./SignUpPage.css";
 
 const SignInPage = () => {
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["user"]); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [apiError, setApiError] = useState("");
+
+  useEffect(() => {
+    // Read cookie value if needed
+    const userCookie = cookies.user;
+    if (userCookie) {
+      console.log("User cookie found:", userCookie);
+      // You might want to handle the case where the user is already logged in
+      navigate("/dashboard");
+    }
+  }, [cookies, navigate]);
 
   const handleSignUpClick = (e) => {
     e.preventDefault();
@@ -76,6 +88,11 @@ const SignInPage = () => {
           }
         );
         console.log("Login successful:", response.data);
+
+        // Store email and ID in cookies
+        const { id } = response.data;
+        setCookie("user", { email, id }, { path: "/", maxAge: 3600 });
+
         navigate("/dashboard");
       } catch (error) {
         if (error.response) {
