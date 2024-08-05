@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import "./SignUpPage.css";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./SignUpPage.css";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -10,8 +11,10 @@ const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ name: "", email: "", password: "" });
+  const [apiError, setApiError] = useState("");
 
-  const handleSignInClick = () => {
+  const handleSignInClick = (e) => {
+    e.preventDefault();
     navigate("/signin");
   };
 
@@ -36,7 +39,11 @@ const SignUpPage = () => {
     setName(value);
     setErrors((prevErrors) => ({
       ...prevErrors,
-      name: value ? (validateName(value) ? "" : "Name must be at least 3 characters long and contain only letters.") : "Name is required.",
+      name: value
+        ? validateName(value)
+          ? ""
+          : "Name must be at least 3 characters long and contain only letters."
+        : "Name is required.",
     }));
   };
 
@@ -45,7 +52,11 @@ const SignUpPage = () => {
     setEmail(value);
     setErrors((prevErrors) => ({
       ...prevErrors,
-      email: value ? (validateEmail(value) ? "" : "Please enter a valid email address.") : "Email is required.",
+      email: value
+        ? validateEmail(value)
+          ? ""
+          : "Please enter a valid email address."
+        : "Email is required.",
     }));
   };
 
@@ -54,7 +65,11 @@ const SignUpPage = () => {
     setPassword(value);
     setErrors((prevErrors) => ({
       ...prevErrors,
-      password: value ? (validatePassword(value) ? "" : "Password must be 8-16 characters, include letters, numbers, and symbols.") : "Password is required.",
+      password: value
+        ? validatePassword(value)
+          ? ""
+          : "Password must be 8-16 characters, include letters, numbers, and symbols."
+        : "Password is required.",
     }));
   };
 
@@ -62,17 +77,31 @@ const SignUpPage = () => {
     if (!value) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [field]: `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
+        [field]: `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is required.`,
       }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nameError = name ? (validateName(name) ? "" : "Name must be at least 3 characters long and contain only letters.") : "Name is required.";
-    const emailError = email ? (validateEmail(email) ? "" : "Please enter a valid email address.") : "Email is required.";
-    const passwordError = password ? (validatePassword(password) ? "" : "Password must be 8-16 characters, include letters, numbers, and symbols.") : "Password is required.";
+    const nameError = name
+      ? validateName(name)
+        ? ""
+        : "Name must be at least 3 characters long and contain only letters."
+      : "Name is required.";
+    const emailError = email
+      ? validateEmail(email)
+        ? ""
+        : "Please enter a valid email address."
+      : "Email is required.";
+    const passwordError = password
+      ? validatePassword(password)
+        ? ""
+        : "Password must be 8-16 characters, include letters, numbers, and symbols."
+      : "Password is required.";
 
     if (nameError || emailError || passwordError) {
       setErrors({
@@ -81,7 +110,23 @@ const SignUpPage = () => {
         password: passwordError,
       });
     } else {
-      console.log("Form submitted successfully");
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/users/register",
+          { name, email, password },
+          { headers: { "Content-Type": "application/json" } }
+        );
+        console.log("Registration successful:", response.data);
+        navigate("/signin");
+      } catch (error) {
+        if (error.response) {
+          setApiError("Registration failed. Please try again.");
+        } else if (error.request) {
+          setApiError("Network error. Please try again later.");
+        } else {
+          setApiError("An unexpected error occurred.");
+        }
+      }
     }
   };
 
@@ -146,6 +191,12 @@ const SignUpPage = () => {
               {errors.password}
             </Form.Control.Feedback>
           </Form.Group>
+
+          {apiError && (
+            <div className="alert alert-danger" role="alert">
+              {apiError}
+            </div>
+          )}
 
           <div className="signup-button">
             <Button variant="primary" type="submit" className="btn-primary">
