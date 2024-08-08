@@ -118,6 +118,7 @@ const SignUpPage = () => {
         );
         console.log("Registration successful:", response.data);
         navigate("/signin");
+        console.log("Navigating to /signin");
       } catch (error) {
         if (error.response) {
           setApiError("Registration failed. Please try again.");
