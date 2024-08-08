@@ -1,31 +1,60 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { useLocation } from "react-router-dom";
+import { Navbar, Container, NavDropdown } from "react-bootstrap";
+import "./Dashboard.css";
 
 const Dashboard = () => {
-  const [authData, setAuthData] = useState("");
+  const [email, setEmail] = useState("");
+
+  const location = useLocation();
 
   useEffect(() => {
-    // Read the response data from the cookie
-    const cookieData = Cookies.get("authData");
+    // Parse query parameters from URL
+    const queryParams = new URLSearchParams(location.search);
+    const emailParam = queryParams.get("email");
 
-    // Parse JSON data and handle the case where the cookie is not set
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+
+    // Read auth data from the cookie
+    const cookieData = Cookies.get("authData");
     if (cookieData) {
       try {
-        const parsedData = JSON.parse(cookieData);
-        setAuthData(JSON.stringify(parsedData, null, 2)); // Format JSON for better readability
+        JSON.parse(cookieData); // Process cookie data (unused)
       } catch (error) {
         console.error("Error parsing cookie data:", error);
-        setAuthData("Failed to parse data from the cookie.");
       }
     } else {
-      setAuthData("No data found in cookie.");
+      console.error("No data found in cookie.");
     }
-  }, []);
+  }, [location.search]);
+
+  const handleLogout = () => {
+    // Handle logout logic here
+    Cookies.remove("authData"); // Remove cookie
+    window.location.href = "/signin"; // Redirect to sign-in page
+  };
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <pre>Auth Data: {authData}</pre> {/* Using <pre> to display formatted JSON */}
+      <Navbar className="custom-navbar" expand="lg">
+        <Container>
+          <Navbar.Brand href="#home">Task Management App</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+            <NavDropdown className="custom-dropdown" title={email || "No email provided"} id="basic-nav-dropdown">
+              <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+            </NavDropdown>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <div>
+        <h1>Dashboard</h1>
+        {/* Add any other content or components here */}
+      </div>
     </div>
   );
 };

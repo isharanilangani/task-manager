@@ -79,8 +79,9 @@ const SignInPage = () => {
 
         const responseData = response.data; // Retrieve the entire response data
         if (responseData) {
+          const { id } = responseData; // Assuming response contains the id field
           Cookies.set("authData", JSON.stringify(responseData), { expires: 7 }); // Store the entire response data in cookie
-          navigate("/dashboard");
+          navigate(`/dashboard?email=${encodeURIComponent(email)}&id=${id}`);
         } else {
           setApiError("Failed to retrieve data from the server.");
         }
