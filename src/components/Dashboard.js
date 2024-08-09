@@ -133,9 +133,16 @@ const Dashboard = () => {
 
       {/* Display the success message if it exists, outside the modal */}
       {successMessage && (
-        <Alert variant="success" className="m-3">
-          {successMessage}
-        </Alert>
+        <Modal
+          show={true}
+          onHide={() => setSuccessMessage("")}
+          centered
+          className="success-modal"
+        >
+          <Modal.Body className="text-center">
+            <span className="success-text">{successMessage}</span>
+          </Modal.Body>
+        </Modal>
       )}
 
       <Modal
@@ -177,11 +184,8 @@ const Dashboard = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
           <Button variant="primary" onClick={handleSaveChanges}>
-            Save Changes
+            Save
           </Button>
         </Modal.Footer>
       </Modal>
