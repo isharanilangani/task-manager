@@ -16,6 +16,15 @@
   .custom-navbar .navbar-text:hover {
     color: #c98e47;
   }
+
+  .custom-dropdown .dropdown-toggle {
+    color: white ; 
+    font-weight: bold ; 
+  }
+  
+  .custom-dropdown .dropdown-toggle:hover {
+    color: #c98e47 ; 
+  }
   
   .custom-dropdown .dropdown-menu {
     background-color: #6f4f28;
