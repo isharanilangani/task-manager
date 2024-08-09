@@ -1,46 +1,53 @@
 .custom-navbar {
-    background-color: #6f4f28;
-  }
-  
-  .custom-navbar .navbar-brand {
-    color: white;
-    font-weight: bold;
-  }
-  
-  .custom-navbar .navbar-text {
-    color: white;
-    font-weight: bold;
-  }
-  
-  .custom-navbar .navbar-brand:hover,
-  .custom-navbar .navbar-text:hover {
-    color: #c98e47;
-  }
+  background-color: #6f4f28;
+}
 
-  .custom-dropdown .dropdown-toggle {
-    color: white ; 
-    font-weight: bold ; 
-  }
-  
-  .custom-dropdown .dropdown-toggle:hover {
-    color: #c98e47 ; 
-  }
-  
-  .custom-dropdown .dropdown-menu {
-    background-color: #6f4f28;
-  }
-  
-  .custom-dropdown .dropdown-item {
-    color: white;
-    font-weight: bold;
-  }
-  
-  .custom-dropdown .dropdown-item:hover {
-    background-color: #c98e47;
-    color: white;
-  }
+.custom-navbar .navbar-brand {
+  color: white;
+  font-weight: bold;
+}
 
-  .custom-dropdown .dropdown-toggle::after {
-    color: white;
-  }
-  
+.custom-navbar .navbar-text {
+  color: white;
+  font-weight: bold;
+}
+
+.custom-navbar .navbar-brand:hover,
+.custom-navbar .navbar-text:hover {
+  color: #c98e47;
+}
+
+.custom-dropdown .dropdown-toggle {
+  color: white;
+  font-weight: bold;
+}
+
+.custom-dropdown .dropdown-toggle:focus,
+.custom-dropdown .dropdown-toggle:active,
+.custom-dropdown .dropdown-toggle.show {
+  color: white;
+  font-weight: bold;
+  background-color: transparent; 
+}
+
+.custom-dropdown .dropdown-toggle:hover {
+  color: #c98e47;
+}
+
+.custom-dropdown .dropdown-toggle::after {
+  color: white;
+}
+
+.custom-dropdown .dropdown-menu {
+  background-color: #6f4f28;
+}
+
+.custom-dropdown .dropdown-item {
+  color: white;
+  font-weight: bold;
+}
+
+.custom-dropdown .dropdown-item:hover {
+  background-color: #c98e47;
+  color: white;
+}
