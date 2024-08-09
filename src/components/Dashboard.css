@@ -51,3 +51,56 @@
   background-color: #c98e47;
   color: white;
 }
+
+/* Modal Styles */
+.custom-modal .modal-content {
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.custom-modal .modal-header {
+  border-bottom-color: #9e9d9b; 
+  border-radius: 3px; 
+}
+
+.custom-modal .modal-title {
+  font-weight: bold; 
+}
+
+.custom-modal .modal-footer {
+  border-top: none; /* Remove border */
+}
+
+.custom-modal .btn-primary {
+  background-color: #6f4f28; /* Match navbar color */
+  border-color: #6f4f28;
+}
+
+.custom-modal .btn-primary:hover,
+.custom-modal .btn-primary:focus,
+.custom-modal .btn-primary:active {
+  background-color: #c98e47; /* Hover and focus color */
+  border-color: #c98e47;
+}
+
+.custom-modal .btn-secondary {
+  background-color: #c98e47; /* Secondary button color */
+  border-color: #c98e47;
+}
+
+.custom-modal .btn-secondary:hover,
+.custom-modal .btn-secondary:focus,
+.custom-modal .btn-secondary:active {
+  background-color: #6f4f28; /* Secondary button hover color */
+  border-color: #6f4f28;
+}
+
+/* Customize the close button */
+.custom-modal .close {
+  color: white; /* Close button color */
+  opacity: 1; /* Full opacity */
+}
+
+.custom-modal .close:hover {
+  color: #c98e47; /* Close button hover color */
+}

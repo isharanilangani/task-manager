@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useLocation } from "react-router-dom";
-import { Navbar, Container, NavDropdown, Modal, Button, Form, Alert } from "react-bootstrap";
-import axios from "axios"; 
+import {
+  Navbar,
+  Container,
+  NavDropdown,
+  Modal,
+  Button,
+  Form,
+  Alert,
+} from "react-bootstrap";
+import axios from "axios";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState(""); 
-  const [userId, setUserId] = useState(""); 
-  const [password, setPassword] = useState(""); 
+  const [name, setName] = useState("");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); 
-  const [errorMessage, setErrorMessage] = useState(""); 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const location = useLocation();
 
@@ -40,8 +48,10 @@ const Dashboard = () => {
   const fetchUserName = async () => {
     if (userId) {
       try {
-        const response = await axios.get(`http://localhost:8080/api/users/name/${userId}`);
-        setName(response.data); 
+        const response = await axios.get(
+          `http://localhost:8080/api/users/name/${userId}`
+        );
+        setName(response.data);
       } catch (error) {
         console.error("Error fetching user name:", error);
       }
@@ -49,34 +59,37 @@ const Dashboard = () => {
   };
 
   const handleSettingsClick = () => {
-    fetchUserName(); 
+    fetchUserName();
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setErrorMessage(""); 
-    setSuccessMessage(""); 
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const handleLogout = () => {
-    Cookies.remove("authData"); 
-    window.location.href = "/signin"; 
+    Cookies.remove("authData");
+    window.location.href = "/signin";
   };
 
   const handleSaveChanges = async () => {
     if (!userId) return;
 
     try {
-      const response = await axios.put(`http://localhost:8080/api/users/update/${userId}`, {
-        name,
-        password,
-      });
+      const response = await axios.put(
+        `http://localhost:8080/api/users/update/${userId}`,
+        {
+          name,
+          password,
+        }
+      );
 
       if (response.status === 200) {
-        setSuccessMessage("User updated successfully."); 
-        setName(response.data.name); 
-        setShowModal(false); 
+        setSuccessMessage("User updated successfully.");
+        setName(response.data.name);
+        setShowModal(false);
 
         // Automatically remove the success message after 3 seconds
         setTimeout(() => {
@@ -85,7 +98,7 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error("Error updating user:", error);
-      setErrorMessage("Failed to update user."); 
+      setErrorMessage("Failed to update user.");
 
       // Automatically remove the error message after 3 seconds
       setTimeout(() => {
@@ -100,9 +113,18 @@ const Dashboard = () => {
         <Container>
           <Navbar.Brand href="#home">Task Management App</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-            <NavDropdown className="custom-dropdown" title={email || "No email provided"} id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={handleSettingsClick}>Settings</NavDropdown.Item>
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            className="justify-content-end"
+          >
+            <NavDropdown
+              className="custom-dropdown"
+              title={email || "No email provided"}
+              id="basic-nav-dropdown"
+            >
+              <NavDropdown.Item onClick={handleSettingsClick}>
+                Settings
+              </NavDropdown.Item>
               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
             </NavDropdown>
           </Navbar.Collapse>
@@ -116,35 +138,31 @@ const Dashboard = () => {
         </Alert>
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        className="custom-modal"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {/* Display the error message inside the modal if it exists */}
-          {errorMessage && (
-            <Alert variant="danger">
-              {errorMessage}
-            </Alert>
-          )}
+          {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
           <Form>
             <Form.Group controlId="formName">
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </Form.Group>
 
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={email} 
-                readOnly 
-              />
+              <Form.Control type="email" value={email} readOnly />
             </Form.Group>
 
             <Form.Group controlId="formPassword">
@@ -152,7 +170,7 @@ const Dashboard = () => {
               <Form.Control
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} 
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
               />
             </Form.Group>
