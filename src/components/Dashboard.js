@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useLocation } from "react-router-dom";
-import { Navbar, Container, NavDropdown, Modal, Button, Form } from "react-bootstrap";
-import axios from "axios"; // Import axios for API calls
+import { Navbar, Container, NavDropdown, Modal, Button, Form, Alert } from "react-bootstrap";
+import axios from "axios"; 
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState(""); // Store user's name
-  const [userId, setUserId] = useState(""); // Store user ID from cookie
+  const [name, setName] = useState(""); 
+  const [userId, setUserId] = useState(""); 
+  const [password, setPassword] = useState(""); 
   const [showModal, setShowModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState(""); 
 
   const location = useLocation();
 
   useEffect(() => {
-    // Parse query parameters from URL
     const queryParams = new URLSearchParams(location.search);
     const emailParam = queryParams.get("email");
 
@@ -22,7 +24,6 @@ const Dashboard = () => {
       setEmail(emailParam);
     }
 
-    // Read auth data from the cookie and extract user ID
     const cookieData = Cookies.get("authData");
     if (cookieData) {
       try {
@@ -40,7 +41,7 @@ const Dashboard = () => {
     if (userId) {
       try {
         const response = await axios.get(`http://localhost:8080/api/users/name/${userId}`);
-        setName(response.data); // Set the fetched name
+        setName(response.data); 
       } catch (error) {
         console.error("Error fetching user name:", error);
       }
@@ -48,18 +49,49 @@ const Dashboard = () => {
   };
 
   const handleSettingsClick = () => {
-    fetchUserName(); // Fetch the user's name when opening the settings modal
+    fetchUserName(); 
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setErrorMessage(""); 
+    setSuccessMessage(""); 
   };
 
   const handleLogout = () => {
-    // Handle logout logic here
-    Cookies.remove("authData"); // Remove cookie
-    window.location.href = "/signin"; // Redirect to sign-in page
+    Cookies.remove("authData"); 
+    window.location.href = "/signin"; 
+  };
+
+  const handleSaveChanges = async () => {
+    if (!userId) return;
+
+    try {
+      const response = await axios.put(`http://localhost:8080/api/users/update/${userId}`, {
+        name,
+        password,
+      });
+
+      if (response.status === 200) {
+        setSuccessMessage("User updated successfully."); 
+        setName(response.data.name); 
+        setShowModal(false); 
+
+        // Automatically remove the success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setErrorMessage("Failed to update user."); 
+
+      // Automatically remove the error message after 3 seconds
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
+    }
   };
 
   return (
@@ -77,17 +109,32 @@ const Dashboard = () => {
         </Container>
       </Navbar>
 
+      {/* Display the success message if it exists, outside the modal */}
+      {successMessage && (
+        <Alert variant="success" className="m-3">
+          {successMessage}
+        </Alert>
+      )}
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {/* Display the error message inside the modal if it exists */}
+          {errorMessage && (
+            <Alert variant="danger">
+              {errorMessage}
+            </Alert>
+          )}
+
           <Form>
             <Form.Group controlId="formName">
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
                 value={name} 
+                onChange={(e) => setName(e.target.value)} 
               />
             </Form.Group>
 
@@ -95,14 +142,19 @@ const Dashboard = () => {
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                value={email} // Set the value of the email field
-                readOnly // Make the email field read-only
+                value={email} 
+                readOnly 
               />
             </Form.Group>
 
             <Form.Group controlId="formPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" placeholder="Enter your password" />
+              <Form.Control
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} 
+                placeholder="Enter your password"
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -110,7 +162,7 @@ const Dashboard = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary">
+          <Button variant="primary" onClick={handleSaveChanges}>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -118,7 +170,6 @@ const Dashboard = () => {
 
       <div>
         <h1>Dashboard</h1>
-        {/* Add any other content or components here */}
       </div>
     </div>
   );
